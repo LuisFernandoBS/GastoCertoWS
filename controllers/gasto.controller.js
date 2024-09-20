@@ -1,0 +1,61 @@
+const postgre = require('../db');
+
+const gastoController = {
+    getAll: async (req, res) => {
+        try {
+            const { rows } = await postgre.query("SELECT * FROM tb_gastos");
+            res.json({ msg: "success", data: rows });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
+
+    getById: async (req, res) => {
+        try {
+            const { rows } = await postgre.query("SELECT * FROM tb_gastos WHERE cod = $1", [req.params.id]);
+            if (rows[0]) {
+                return res.json({ msg: "success", data: rows });
+            }
+            res.status(404).json({ msg: "not found" });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
+
+    create: async (req, res) => {
+        try {
+            const { descricao, data_gasto, forma_pagamento, qtd_parcelas, status_pagamento, valor } = req.body;
+            const sql = 'INSERT INTO tb_gastos (descricao, data_gasto, forma_pagamento, qtd_parcelas, status_pagamento, valor) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
+            const { rows } = await postgre.query(sql, [descricao, data_gasto, forma_pagamento, qtd_parcelas, status_pagamento, valor]);
+            res.json({ msg: "success", data: rows[0] });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
+
+    updateById: async (req, res) => {
+        try {
+            const { descricao, data_gasto, forma_pagamento, qtd_parcelas, status_pagamento, valor } = req.body;
+            const sql = 'UPDATE tb_gastos SET descricao = $1, data_gasto = $2, forma_pagamento = $3, qtd_parcelas = $4, status_pagamento = $5, valor = $6 WHERE cod = $7 RETURNING *';
+            const { rows } = await postgre.query(sql, [descricao, data_gasto, forma_pagamento, qtd_parcelas, status_pagamento, valor, req.params.id]);
+            res.json({ msg: "success", data: rows[0] });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    },
+
+    deleteById: async (req, res) => {
+        try {
+            const sql = 'DELETE FROM tb_gastos WHERE cod = $1 RETURNING *';
+            const { rows } = await postgre.query(sql, [req.params.id]);
+            if (rows[0]) {
+                return res.json({ msg: "success", data: rows[0] });
+            }
+            return res.status(404).json({ msg: "not found" });
+        } catch (error) {
+            res.status(500).json({ msg: error.message });
+        }
+    }
+};
+
+module.exports = gastoController;
