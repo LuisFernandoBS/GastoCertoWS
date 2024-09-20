@@ -6,8 +6,8 @@ require('dotenv').config()
 app.use(express.json())
 
 
-const userRouter = require('./routes/user.router')
+const gastoRouter = require('./routes/gasto.router')
 
-app.use("/api/v1/user", userRouter)
+app.use("/api/v1/gasto", gastoRouter)
 
-app.listen(process.env.POSTGRES_PORT, () => console.log("Server running on port 5000"))
+app.listen(process.env.POSTGRES_PORT, () => console.log("Servidor rodando na porta 5000"))
