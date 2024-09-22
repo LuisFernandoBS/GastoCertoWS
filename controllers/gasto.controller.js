@@ -3,7 +3,7 @@ const postgre = require('../db');
 const gastoController = {
     getAll: async (req, res) => {
         try {
-            const { rows } = await postgre.query("SELECT * FROM tb_gastos LEFT JOIN tb_categoria_gasto ON tb_gastos.cod_categoria = tb_categoria_gasto.cod;");
+            const { rows } = await postgre.query("SELECT tb_gastos.*,tb_categoria_gasto.nome FROM tb_gastos LEFT JOIN tb_categoria_gasto ON tb_gastos.cod_categoria = tb_categoria_gasto.cod;");
             res.json({ msg: "success", data: rows });
         } catch (error) {
             res.status(500).json({ msg: error.message });
