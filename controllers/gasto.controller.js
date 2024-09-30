@@ -16,7 +16,7 @@ const gastoController = {
         try {
             const { rows } = await postgre.query("SELECT * FROM tb_gastos WHERE cod = $1", [req.params.id]);
             if (rows[0]) {
-                return res.json({ msg: "success", data: rows });
+                return res.json({ msg: "success2", data: rows });
             }
             res.status(404).json({ msg: "not found" });
         } catch (error) {
